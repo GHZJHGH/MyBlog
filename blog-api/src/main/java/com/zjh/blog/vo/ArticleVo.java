@@ -26,6 +26,10 @@ public class ArticleVo {
 
     private String author;
 
+    private String authorId;
+
+    private String avatar;
+
     private ArticleBodyVo body;
 
     private List<TagVo> tags;

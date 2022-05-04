@@ -75,6 +75,7 @@ public class CacheAspect {
                 Result result = JSON.parseObject(redisValue, Result.class);
                 return result;
             }
+            //没有缓存，则调用方法，并将结果放入缓存
             Object proceed = pjp.proceed();
             redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(proceed), Duration.ofMillis(expire));
             log.info("存入缓存~~~ {},{}", className, methodName);

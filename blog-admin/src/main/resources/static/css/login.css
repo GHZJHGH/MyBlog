@@ -128,7 +128,7 @@ html,body {
 }
 .tipInfo{font-size: 12px;}
 .tipInfo span{
-  color: #66b1ff;
+  /*color: #66b1ff;*/
   padding: 0 5px;
 }
 .tipInfo .el-checkbox{

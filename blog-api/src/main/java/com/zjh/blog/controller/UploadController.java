@@ -33,6 +33,7 @@ public class UploadController {
             System.out.println(QiniuUtils.url + fileName);
             return Result.success(QiniuUtils.url + fileName);
         } else {
+            System.out.println("上传失败");
             return Result.fail(ErrorCode.UPLOAD_ERROR.getCode(), ErrorCode.UPLOAD_ERROR.getMsg());
         }
     }

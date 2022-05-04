@@ -7,6 +7,7 @@ public enum ErrorCode {
     TOKEN_ERROR(10003, "token不合法"),
     ACCOUNT_EXIST(10004, "账号已存在"),
     NO_PERMISSION(70001, "无访问权限"),
+    IS_DELETE(80001, "账号已被拉黑"),
     SESSION_TIME_OUT(90001, "会话超时"),
     NO_LOGIN(90002, "未登录"),
     UPLOAD_ERROR(20001, "图片上传失败");

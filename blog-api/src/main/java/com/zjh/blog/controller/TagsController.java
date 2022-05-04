@@ -1,13 +1,12 @@
 package com.zjh.blog.controller;
 
 
+import com.zjh.blog.dao.pojo.Tag;
 import com.zjh.blog.service.TagService;
 import com.zjh.blog.vo.Result;
+import com.zjh.blog.vo.params.TagParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 //标签
 @RestController
@@ -19,7 +18,7 @@ public class TagsController {
 
     @GetMapping("hot")
     public Result hot() {
-        int limit = 6;
+        int limit = 5;
         return tagService.hots(limit);
     }
 
@@ -39,4 +38,26 @@ public class TagsController {
     }
 
 
+    @GetMapping("listpage")
+    public Result getTagListPage(TagParam tagParam){
+        System.out.println(tagParam);
+        return tagService.getTagListPage(tagParam);
+    }
+    @PostMapping("add")
+    public Result addTag(@RequestBody Tag tag) {
+        return tagService.add(tag);
+    }
+    @PostMapping("delete")
+    public Result delete(@RequestBody Tag tag){
+        return tagService.delete(tag.getId());
+    }
+    @PostMapping("update")
+    public Result update(@RequestBody Tag tag){
+        System.out.println(tag);
+        return tagService.update(tag);
+    }
+    @PostMapping("batchDelete")
+    public Result batchDelete(@RequestBody String string){
+        return tagService.batchDelete(string);
+    }
 }

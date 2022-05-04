@@ -15,7 +15,8 @@ import java.io.IOException;
 
 @Component
 public class QiniuUtils {
-    public static final String url = "http://r4erbp127.hn-bkt.clouddn.com/";
+    //外链域名
+    public static final String url = "http://r9cdj45m6.hn-bkt.clouddn.com/";
 
     public boolean upload(MultipartFile file, String fileName) {
         //构造一个带指定 Region 对象的配置类
@@ -26,7 +27,7 @@ public class QiniuUtils {
         //...生成上传凭证，然后准备上传
         String accessKey = "QNXau4hs_zB7-UTkLbE0zVY3WxMdEdf2DK-di3Ws";
         String secretKey = "--_Zuitu0O66tQnWMdjiNqaeocF2epxd-1iVjdLD";
-        String bucket = "zjhblog-pic";
+        String bucket = "zjh-blog-pic";
 
         try {
             byte[] uploadBytes = file.getBytes();

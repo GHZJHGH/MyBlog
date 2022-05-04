@@ -6,9 +6,9 @@
   --space-m: var(--space-root);
   --space-l: calc(var(--space-root) * 1.5);
   --space-xl: calc(var(--space-root) * 2);
-  --color-primary: mediumslateblue;
+  --color-primary: #5FB878;
   --color-secondary: black;
-  --color-tertiary: #28d1ff;
+  --color-tertiary: #f4f4f4;
   --base-border-radius: 0.25rem;
   --ease: cubic-bezier(0.075, 0.82, 0.165, 1);
   --duration: 350ms;
@@ -24,7 +24,7 @@ body {
   display: grid;
   place-items: center;
   margin: 0;
-  height: 100vh;
+  height: 80vh;
   padding: var(--space-m);
   font-size: var(--font-size);
   font-family: var(--font-family);
@@ -49,43 +49,43 @@ h2 {
   width: 100%;
   max-width: 450px;
   margin: 0 auto;
-  -webkit-transform: skewY(-5deg) translateY(10%) scale(0.94);
-          transform: skewY(-5deg) translateY(10%) scale(0.94);
+  /*-webkit-transform: skewY(-5deg) translateY(10%) scale(0.94);*/
+  /*        transform: skewY(-5deg) translateY(10%) scale(0.94);*/
   -webkit-transition: box-shadow var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);
   transition: box-shadow var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);
   transition: box-shadow var(--duration) var(--ease), transform var(--duration) var(--ease);
   transition: box-shadow var(--duration) var(--ease), transform var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);
 }
-.form:before, .form:after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  background-color: #ebebeb;
-  width: 25%;
-  height: 100%;
-  -webkit-transition: background-color var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);
-  transition: background-color var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);
-  transition: background-color var(--duration) var(--ease), transform var(--duration) var(--ease);
-  transition: background-color var(--duration) var(--ease), transform var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);
-}
-.form:before {
-  top: 0;
-  right: calc(100% - 1px);
-  -webkit-transform-origin: 100% 100%;
-          transform-origin: 100% 100%;
-  -webkit-transform: skewY(-35deg) scaleX(-1);
-          transform: skewY(-35deg) scaleX(-1);
-  z-index: -1;
-}
-.form:after {
-  top: 0;
-  left: calc(100% - 1px);
-  -webkit-transform-origin: 0 0;
-          transform-origin: 0 0;
-  -webkit-transform: skewY(-35deg) scaleX(-1);
-          transform: skewY(-35deg) scaleX(-1);
-  z-index: 2;
-}
+/*.form:before, .form:after {*/
+/*  content: '';*/
+/*  position: absolute;*/
+/*  pointer-events: none;*/
+/*  background-color: #ebebeb;*/
+/*  width: 25%;*/
+/*  height: 100%;*/
+/*  -webkit-transition: background-color var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);*/
+/*  transition: background-color var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);*/
+/*  transition: background-color var(--duration) var(--ease), transform var(--duration) var(--ease);*/
+/*  transition: background-color var(--duration) var(--ease), transform var(--duration) var(--ease), -webkit-transform var(--duration) var(--ease);*/
+/*}*/
+/*.form:before {*/
+/*  top: 0;*/
+/*  right: calc(100% - 1px);*/
+/*  -webkit-transform-origin: 100% 100%;*/
+/*          transform-origin: 100% 100%;*/
+/*  -webkit-transform: skewY(-35deg) scaleX(-1);*/
+/*          transform: skewY(-35deg) scaleX(-1);*/
+/*  z-index: -1;*/
+/*}*/
+/*.form:after {*/
+/*  top: 0;*/
+/*  left: calc(100% - 1px);*/
+/*  -webkit-transform-origin: 0 0;*/
+/*          transform-origin: 0 0;*/
+/*  -webkit-transform: skewY(-35deg) scaleX(-1);*/
+/*          transform: skewY(-35deg) scaleX(-1);*/
+/*  z-index: 2;*/
+/*}*/
 .form:hover, .form:focus-within {
   -webkit-transform: scale(1.0001);
           transform: scale(1.0001);
@@ -182,9 +182,9 @@ input {
   color: var(--color-secondary);
   border: 2px solid var(--color-primary);
 }
-input:focus {
-  color: var(--color-primary);
-}
+/*input:focus {*/
+/*  color: var(--color-primary);*/
+/*}*/
 
 .btn-group {
   display: -webkit-box;

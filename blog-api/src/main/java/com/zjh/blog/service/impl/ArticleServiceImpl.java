@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zjh.blog.dao.dos.Archives;
+import com.zjh.blog.dao.dos.Archives2;
+import com.zjh.blog.dao.dos.CategoryCount;
+import com.zjh.blog.dao.dos.CategoryCount2;
 import com.zjh.blog.dao.mapper.ArticleBodyMapper;
 import com.zjh.blog.dao.mapper.ArticleMapper;
 import com.zjh.blog.dao.mapper.ArticleTagMapper;
@@ -22,15 +25,17 @@ import com.zjh.blog.vo.Result;
 import com.zjh.blog.vo.TagVo;
 import com.zjh.blog.vo.params.ArticleParam;
 import com.zjh.blog.vo.params.PageParams;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -47,6 +52,8 @@ public class ArticleServiceImpl implements ArticleService {
     private ThreadService threadService;
     @Autowired
     private ArticleTagMapper articleTagMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public Result listArticle(PageParams pageParams) {
@@ -57,7 +64,8 @@ public class ArticleServiceImpl implements ArticleService {
                 pageParams.getCategoryId(),
                 pageParams.getTagId(),
                 pageParams.getYear(),
-                pageParams.getMonth());
+                pageParams.getMonth(),
+                pageParams.getTitle());
 
         List<Article> records = articleIPage.getRecords();
         return Result.success(copyList(records, true, true));
@@ -129,6 +137,49 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public Result listArchives2() {
+        List<Archives> archivesList = articleMapper.listArchives();
+        String[] category_name = articleMapper.getName();
+        List<Archives2> list = articleMapper.listArchives2();
+
+        HashMap hashMap = new HashMap();
+        String[] date = new String[archivesList.size()];
+        Long[] total = new Long[archivesList.size()];
+        int sum = 0;
+        for (int i = 0; i < archivesList.size(); i++) {
+            date[i] = archivesList.get(i).getYear().toString() + "年" + archivesList.get(i).getMonth().toString() + "月";
+            total[i] = archivesList.get(i).getCount();
+            sum += archivesList.get(i).getCount();
+        }
+
+        CategoryCount2[] count2s = new CategoryCount2[category_name.length];
+        for (int i = 0; i < category_name.length; i++) {
+            int[] count = new int[date.length];
+            count2s[i] = new CategoryCount2();
+            count2s[i].setName(category_name[i]);
+
+            for (int j = 0; j < date.length; j++) {
+                for (Archives2 value : list) {
+                    if (value.getYear().equals(archivesList.get(j).getYear()) &&
+                            value.getMonth().equals(archivesList.get(j).getMonth()) &&
+                            value.getName().equals(category_name[i])) {
+                        count[j] = Math.toIntExact(value.getCount());
+                    }
+                }
+            }
+            count2s[i].setData(Arrays.stream(count).boxed().toArray(Integer[]::new));
+        }
+
+        hashMap.put("date", date);
+        hashMap.put("data", count2s);
+        hashMap.put("name", category_name);
+        hashMap.put("total", total);
+        hashMap.put("sum", sum);
+
+        return Result.success(hashMap);
+    }
+
+    @Override
     public Result findArticleById(Long articleId) {
         /**
          * 1.根据id查询文章信息
@@ -188,9 +239,78 @@ public class ArticleServiceImpl implements ArticleService {
         article.setBodyId(articleBody.getId());
         articleMapper.updateById(article);
 
+        String p = "{\"page\":1,\"pageSize\":5}";
+        p = DigestUtils.md5Hex(p);
+        String key = "list_article" + "::" + "ArticleController" + "::" + "listArticle" + "::" + p;
+        redisTemplate.delete(key);
+
         Map<String, String> map = new HashMap<>();
         map.put("id", article.getId().toString());
         return Result.success(map);
+    }
+
+    @Override
+    public Result findArticleByAuthorId(Long authorId) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getAuthorId, authorId);
+        List<Article> article = articleMapper.selectList(queryWrapper);
+        return Result.success(copyList(article, true, true));
+    }
+
+    @Override
+    public Result findCommentArticle(Long authorId) {
+        List<Article> article = articleMapper.findCommentArticle(authorId);
+        return Result.success(copyList(article, true, true));
+    }
+
+    @Override
+    public Result categoryCount() {
+        List<CategoryCount> archivesList = articleMapper.categoryCount();
+        return Result.success(archivesList);
+    }
+
+    @Override
+    public Result viewCount() {
+        List<CategoryCount> archivesList = articleMapper.viewCount();
+        return Result.success(archivesList);
+    }
+
+    @Override
+    @Transactional
+    public Result delete(Long id) {
+        int i = articleMapper.delete_Body(id);
+        int j = articleMapper.delete_tags(id);
+        int row = articleMapper.deleteById(id);
+        System.out.println(i);
+        System.out.println(j);
+        System.out.println(row);
+        if (i == 0 || j == 0 || row == 0) {
+            try {
+                throw new Exception(String.valueOf(1));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return Result.success("");
+    }
+
+    @Override
+    public Result getSensitive() {
+        ClassPathResource classPathResource = new ClassPathResource("sensitive/adv.txt");
+
+        try (InputStream inputStream = classPathResource.getInputStream();
+             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));) {
+
+            ArrayList<String> arrayList = new ArrayList();
+            String str = null;
+            while ((str = bufferedReader.readLine()) != null) {
+                arrayList.add(str);
+            }
+            return Result.success(arrayList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Result.fail(5000, "读取失败");
     }
 
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
@@ -222,7 +342,10 @@ public class ArticleServiceImpl implements ArticleService {
         }
         if (isAuthor) {
             Long authorId = article.getAuthorId();
-            articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
+            articleVo.setAuthorId(String.valueOf(authorId));
+            SysUser sysUser = sysUserService.findUserById(authorId);
+            articleVo.setAuthor(sysUser.getNickname());
+            articleVo.setAvatar(sysUser.getAvatar());
         }
         if (isBody) {
             Long bodyId = article.getBodyId();

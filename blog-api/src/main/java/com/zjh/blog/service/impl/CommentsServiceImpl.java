@@ -1,7 +1,10 @@
 package com.zjh.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.zjh.blog.dao.mapper.ArticleMapper;
 import com.zjh.blog.dao.mapper.CommentMapper;
+import com.zjh.blog.dao.pojo.Article;
 import com.zjh.blog.dao.pojo.Comment;
 import com.zjh.blog.dao.pojo.SysUser;
 import com.zjh.blog.service.CommentsService;
@@ -23,6 +26,8 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Autowired
     private CommentMapper commentMapper;
+    @Autowired
+    private ArticleMapper articleMapper;
     @Autowired
     private SysUserService sysUserService;
 
@@ -62,6 +67,12 @@ public class CommentsServiceImpl implements CommentsService {
         Long toUserId = commentParam.getToUserId();
         comment.setToUid(toUserId == null ? 0 : toUserId);
         this.commentMapper.insert(comment);
+
+        LambdaUpdateWrapper<Article> queryWrapper = new LambdaUpdateWrapper<>();
+        queryWrapper.eq(Article::getId,commentParam.getArticleId());
+        queryWrapper.setSql("comment_counts = comment_counts + 1");
+        articleMapper.update(null,queryWrapper);
+
         return Result.success(null);
     }
 

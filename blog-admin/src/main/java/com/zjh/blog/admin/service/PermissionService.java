@@ -23,6 +23,7 @@ public class PermissionService {
          */
         Page<Permission> page = new Page<>(pageParam.getCurrentPage(),pageParam.getPageSize());
         LambdaQueryWrapper<Permission> queryWrapper = new LambdaQueryWrapper<>();
+        //判断查询条件
         if (StringUtils.isNotBlank(pageParam.getQueryString())){
             queryWrapper.eq(Permission::getName,pageParam.getQueryString());
         }

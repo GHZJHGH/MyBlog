@@ -1,12 +1,13 @@
 package com.zjh.blog.controller;
 
+import com.zjh.blog.dao.pojo.Category;
 import com.zjh.blog.service.CategoryService;
 import com.zjh.blog.vo.Result;
+import com.zjh.blog.vo.params.CategoryParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 //分类
 @RestController
@@ -31,4 +32,25 @@ public class CategoryController {
         return categoryService.categoryDetailById(id);
     }
 
+    @GetMapping("listpage")
+    public Result getCategoryListPage(CategoryParam categoryParam){
+        System.out.println(categoryParam);
+        return categoryService.getCategoryListPage(categoryParam);
+    }
+    @PostMapping("add")
+    public Result addCategory(@RequestBody Category category) {
+        return categoryService.add(category);
+    }
+    @PostMapping("delete")
+    public Result delete(@RequestBody Category category){
+        return categoryService.delete(category.getId());
+    }
+    @PostMapping("update")
+    public Result update(@RequestBody Category category){
+        return categoryService.update(category);
+    }
+    @PostMapping("batchDelete")
+    public Result batchDelete(@RequestBody String string){
+        return categoryService.batchDelete(string);
+    }
 }

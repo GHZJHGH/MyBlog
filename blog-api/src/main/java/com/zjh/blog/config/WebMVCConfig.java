@@ -1,7 +1,5 @@
 package com.zjh.blog.config;
 
-//import com.zjh.blog.handler.LoginInterceptor;
-
 import com.zjh.blog.handler.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +15,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //跨域配置
+        //registry.addMapping("/**").allowedOrigins("http://120.76.206.111");
         registry.addMapping("/**").allowedOrigins("http://localhost:8080");
     }
 

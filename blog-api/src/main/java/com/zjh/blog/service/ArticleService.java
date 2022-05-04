@@ -37,7 +37,21 @@ public interface ArticleService {
      */
     Result listArchives();
 
+    Result listArchives2();
+
     Result findArticleById(Long articleId);
 
     Result publish(ArticleParam articleParam);
+
+    Result findArticleByAuthorId(Long authorId);
+
+    Result findCommentArticle(Long authorId);
+
+    Result categoryCount();
+
+    Result viewCount();
+
+    Result delete(Long id);
+
+    Result getSensitive();
 }

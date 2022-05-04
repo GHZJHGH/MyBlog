@@ -24,8 +24,9 @@ public class ArticleController {
      */
     @PostMapping
     @LogAnnotation(module = "文章", operator = "获取文章列表")
-    @Cache(expire = 5 * 60 * 1000, name = "list_article")
+    @Cache(expire = 1 * 30 * 1000, name = "list_article")
     public Result listArticle(@RequestBody PageParams pageParams) {
+        System.out.println(pageParams);
         return articleService.listArticle(pageParams);
     }
 
@@ -54,7 +55,7 @@ public class ArticleController {
     }
 
     /**
-     * 最新文章
+     * 按月归档
      *
      * @return
      */
@@ -63,9 +64,42 @@ public class ArticleController {
         return articleService.listArchives();
     }
 
+    /**
+     * 按月和分类归档
+     *
+     * @return
+     */
+    @PostMapping("listArchives2")
+    public Result listArchives2() {
+        return articleService.listArchives2();
+    }
+
+    /**
+     * 分类统计文章发布数
+     * @return
+     */
+    @PostMapping("categoryCount")
+    public Result categoryCount() {
+        return articleService.categoryCount();
+    }
+
+    /**
+     * 分类统计文章浏览量
+     * @return
+     */
+    @PostMapping("viewCount")
+    public Result viewCount() {
+        return articleService.viewCount();
+    }
+
+    /**
+     * 文章详情
+     * @param articleId
+     * @return
+     */
     @GetMapping("view/{id}")
     public Result findArticleById(@PathVariable("id") Long articleId) {
-        System.out.println(articleId);
+        //System.out.println(articleId);
         return articleService.findArticleById(articleId);
     }
 
@@ -74,4 +108,23 @@ public class ArticleController {
         return articleService.publish(articleParam);
     }
 
+    @GetMapping("author/{authorId}")
+    public Result findArticleByAuthorId(@PathVariable("authorId") Long authorId) {
+        return articleService.findArticleByAuthorId(authorId);
+    }
+
+    @GetMapping("comment/{authorId}")
+    public Result findCommentArticle(@PathVariable("authorId") Long authorId) {
+        return articleService.findCommentArticle(authorId);
+    }
+
+    @PostMapping("delete")
+    public Result delete(@RequestBody ArticleParam articleParam) {
+        return articleService.delete(articleParam.getId());
+    }
+
+    @GetMapping("sensitive")
+    public Result getSensitive(){
+        return articleService.getSensitive();
+    }
 }

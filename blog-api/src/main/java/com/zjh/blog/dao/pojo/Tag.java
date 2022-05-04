@@ -11,4 +11,6 @@ public class Tag {
 
     private String tagName;
 
+    private Byte deleted;
+
 }

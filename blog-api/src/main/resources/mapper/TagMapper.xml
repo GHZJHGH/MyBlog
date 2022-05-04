@@ -4,6 +4,12 @@
 
 <mapper namespace="com.zjh.blog.dao.mapper.TagMapper">
 
+    <resultMap id="tagMap" type="com.zjh.blog.dao.pojo.Tag">
+        <id column="id" property="id"/>
+        <id column="avatar" property="avatar"/>
+        <id column="tag_name" property="tagName"/>
+    </resultMap>
+
     <!-- List<Tag> findTagsByArticleId(Long articleId);-->
     <select id="findTagsByArticleId" parameterType="long" resultType="com.zjh.blog.dao.pojo.Tag">
         select id,avatar,tag_name as tagName from ms_tag
@@ -21,5 +27,27 @@
         <foreach collection="tagIds" item="tagId" separator="," open="(" close=")">
             #{tagId}
         </foreach>
+    </select>
+
+    <select id="listTag" resultMap="tagMap">
+        select * from ms_tag
+        <where>
+            1 = 1
+            <if test="name != null">
+                and tag_name like concat('%',#{name},'%')
+            </if>
+            and deleted = 0
+        </where>
+        order by id
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        select count(id) from ms_tag
+        <where>
+            1 = 1
+            <if test="name != null">
+                and tag_name like concat('%',#{name},'%')
+            </if>
+
+        </where>
     </select>
 </mapper>

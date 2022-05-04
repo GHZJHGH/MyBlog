@@ -15,6 +15,8 @@ public class PageParams {
 
     private String month;
 
+    private String title;
+
     public String getMonth() {
         if (this.month != null && this.month.length() == 1) {
             return "0" + this.month;

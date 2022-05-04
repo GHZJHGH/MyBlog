@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zjh.blog.dao.mapper.SysUserMapper">
+
+    <resultMap id="userMap" type="com.zjh.blog.dao.pojo.SysUser">
+        <id column="id" property="id"/>
+        <id column="account" property="account"/>
+        <id column="avatar" property="avatar"/>
+        <id column="nickname" property="nickname"/>
+        <id column="create_date" property="createDate"/>
+        <id column="lastLogin" property="lastLogin"/>
+        <id column="deleted" property="deleted"/>
+    </resultMap>
+
+
+    <select id="listUser" resultMap="userMap">
+        select * from ms_sys_user
+        <where>
+            1 = 1
+            <if test="name != null">
+                and nickname like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by id
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        select count(id) from ms_sys_user
+        <where>
+            1 = 1
+            <if test="name != null">
+                and nickname like concat('%',#{name},'%')
+            </if>
+            and deleted = 0
+        </where>
+    </select>
+
+
+</mapper>

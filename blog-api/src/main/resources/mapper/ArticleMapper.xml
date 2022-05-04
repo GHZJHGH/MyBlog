@@ -18,8 +18,8 @@
     </resultMap>
 
     <select id="listArchives" resultType="com.zjh.blog.dao.dos.Archives">
-        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as
-        count from ms_article group by year,month
+        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as count
+        from ms_article group by year,month
     </select>
     <!--            Long categoryId,
                                Long tagId,
@@ -38,8 +38,39 @@
             <if test="year != null and year.length>0 and month != null and month.length>0">
                 and (FROM_UNIXTIME(create_date/1000,'%Y') =#{year} and FROM_UNIXTIME(create_date/1000,'%m')=#{month})
             </if>
+
+            <if test="title != null">
+                and title like concat('%',#{title},'%')
+            </if>
+
+
         </where>
         order by weight,create_date desc
+    </select>
+    <select id="categoryCount" resultType="com.zjh.blog.dao.dos.CategoryCount">
+        select category_name as name , count(ms_article.id) as value
+        FROM ms_article,ms_category
+        WHERE ms_category.id = category_id
+        GROUP BY category_id
+    </select>
+    <select id="viewCount" resultType="com.zjh.blog.dao.dos.CategoryCount">
+        select category_name as name , sum(view_counts) as value
+        FROM ms_article,ms_category
+        WHERE ms_category.id = category_id
+        GROUP BY category_id
+    </select>
+    <select id="getName" resultType="java.lang.String">
+        SELECT category_name
+        FROM ms_article,ms_category
+        WHERE ms_category.id = category_id
+        GROUP BY category_id
+    </select>
+    <select id="listArchives2" resultType="com.zjh.blog.dao.dos.Archives2">
+        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month, category_name as name , count(ms_article.id) as count
+        FROM ms_article,ms_category
+        WHERE ms_category.id = category_id
+        GROUP BY category_id,year,month
+        ORDER BY year,month
     </select>
 
 </mapper>

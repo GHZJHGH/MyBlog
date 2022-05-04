@@ -2,6 +2,7 @@ package com.zjh.blog.service;
 
 import com.zjh.blog.vo.Result;
 import com.zjh.blog.vo.params.LoginParam;
+import com.zjh.blog.vo.params.RegisterParam;
 
 public interface LoginService {
     /**
@@ -26,5 +27,5 @@ public interface LoginService {
      * @param loginParam
      * @return
      */
-    Result register(LoginParam loginParam);
+    Result register(RegisterParam registerParam);
 }
